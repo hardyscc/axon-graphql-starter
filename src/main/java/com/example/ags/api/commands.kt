@@ -1,4 +1,6 @@
 package com.example.ags.api
 
-data class CreateHospitalCommand(var hospCode: String)
-data class CreateWardCommand(var hospCode: String, var wardCode: String)
+import org.axonframework.modelling.command.TargetAggregateIdentifier
+
+data class CreateHospitalCommand(@TargetAggregateIdentifier var hospCode: String)
+data class CreateWardCommand(@TargetAggregateIdentifier var hospCode: String, var wardCode: String)

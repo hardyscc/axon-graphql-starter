@@ -20,6 +20,7 @@ public class Hospital {
 
     @CommandHandler
     public Hospital(CreateHospitalCommand cmd) {
+        log.info("Received a CreateHospitalCommand for {}", cmd.getHospCode());
         AggregateLifecycle.apply(new HospitalCreatedEvent(cmd.getHospCode()));
     }
 

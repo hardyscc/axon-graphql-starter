@@ -5,8 +5,8 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Entity
-data class HosptialView(
+data class HospitalView(
         @Id val hospCode: String
 )
 
-interface HosptialViewRepository : JpaRepository<HosptialView, String>
+interface HospitalViewRepository : JpaRepository<HospitalView, String>
