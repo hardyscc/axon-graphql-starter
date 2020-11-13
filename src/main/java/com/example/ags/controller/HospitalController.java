@@ -1,7 +1,8 @@
 package com.example.ags.controller;
 
 import com.example.ags.api.*;
-import com.example.ags.query.HospitalView;
+import com.example.ags.query.hospital.HospitalView;
+import com.example.ags.query.ward.WardView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -13,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 
 @RestController
 @Slf4j
@@ -46,6 +46,12 @@ public class HospitalController {
     public CompletableFuture<HospitalView> getHospital(@PathVariable("hospCode") String hospCode) {
         log.info("getHospital {}", hospCode);
         return this.queryGateway.query(new FindHospitalQuery(hospCode), ResponseTypes.instanceOf(HospitalView.class));
+    }
+
+    @GetMapping("/{hospCode}/ward/{wardCode}")
+    public CompletableFuture<WardView> getWard(@PathVariable("hospCode") String hospCode, @PathVariable("wardCode") String wardCode) {
+        log.info("getWard {} {}", hospCode, wardCode);
+        return this.queryGateway.query(new FindWardQuery(hospCode, wardCode), ResponseTypes.instanceOf(WardView.class));
     }
 
     @GetMapping

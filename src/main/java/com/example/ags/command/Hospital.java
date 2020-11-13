@@ -28,11 +28,12 @@ public class Hospital {
     }
 
     @CommandHandler
-    public void on(AddWardCommand cmd) throws AddWardException {
+    public void on(AddWardCommand cmd) throws Exception {
         log.info("Received {}", cmd);
         if (this.wards.contains(cmd.getWardCode())) {
             throw new AddWardException();
         }
+        AggregateLifecycle.createNew(Ward.class, () -> new Ward(cmd.getHospCode(), cmd.getWardCode()));
         AggregateLifecycle.apply(new WardAddedEvent(cmd.getHospCode(), cmd.getWardCode()));
     }
 

@@ -1,22 +1,21 @@
-package com.example.ags.query;
+package com.example.ags.query.ward;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HospitalView {
+public class WardView {
     @Id
-    private String hospCode;
+    private String id;
 
-    @ElementCollection
-    private List<String> wards;
+    @Column
+    private String wardCode;
 }

@@ -1,9 +1,10 @@
-package com.example.ags.query;
+package com.example.ags.query.hospital;
 
 import com.example.ags.api.FindHospitalQuery;
 import com.example.ags.api.HospitalCreatedEvent;
 import com.example.ags.api.ListHospitalQuery;
 import com.example.ags.api.WardAddedEvent;
+import com.example.ags.query.HospitalViewRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
