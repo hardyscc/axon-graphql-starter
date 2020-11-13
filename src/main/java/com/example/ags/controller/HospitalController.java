@@ -1,9 +1,6 @@
 package com.example.ags.controller;
 
-import com.example.ags.api.CreateHospitalCommand;
-import com.example.ags.api.CreateHospitalDTO;
-import com.example.ags.api.FindHospitalQuery;
-import com.example.ags.api.ListHospitalQuery;
+import com.example.ags.api.*;
 import com.example.ags.query.HospitalView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +27,18 @@ public class HospitalController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompletableFuture<Object> createHospital(@RequestBody CreateHospitalDTO dto) {
-        log.info("createHospital {}", dto.getHospCode());
+        log.info("createHospital {}", dto);
         return this.commandGateway.send(new CreateHospitalCommand(dto.getHospCode())).exceptionally(exception -> {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already exists");
+        });
+    }
+
+    @PostMapping("/{hospCode}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompletableFuture<Object> addWard(@PathVariable("hospCode") String hospCode, @RequestBody AddWardDTO dto) {
+        log.info("addWard {}", dto);
+        return this.commandGateway.send(new AddWardCommand(hospCode, dto.getWardCode())).exceptionally(exception -> {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.toString());
         });
     }
 
