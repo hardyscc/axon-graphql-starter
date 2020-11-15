@@ -1,4 +1,4 @@
-package com.example.ags.command;
+package com.example.ags.aggregate;
 
 import com.example.ags.api.*;
 import lombok.NoArgsConstructor;
@@ -15,14 +15,14 @@ import java.util.List;
 @Aggregate
 @Slf4j
 @NoArgsConstructor
-public class Hospital {
+public class HospitalAggregate {
 
     private final List<String> wards = new ArrayList<>();
     @AggregateIdentifier
     private String hospCode;
 
     @CommandHandler
-    public Hospital(CreateHospitalCommand cmd) {
+    public HospitalAggregate(CreateHospitalCommand cmd) {
         log.info("Received {}", cmd);
         AggregateLifecycle.apply(new HospitalCreatedEvent(cmd.getHospCode()));
     }
@@ -33,18 +33,18 @@ public class Hospital {
         if (this.wards.contains(cmd.getWardCode())) {
             throw new AddWardException();
         }
-        AggregateLifecycle.createNew(Ward.class, () -> new Ward(cmd.getHospCode(), cmd.getWardCode()));
+        AggregateLifecycle.createNew(WardAggregate.class, () -> new WardAggregate(cmd.getHospCode(), cmd.getWardCode()));
         AggregateLifecycle.apply(new WardAddedEvent(cmd.getHospCode(), cmd.getWardCode()));
     }
 
     @EventSourcingHandler
-    public void on(HospitalCreatedEvent evt) {
+    private void on(HospitalCreatedEvent evt) {
         log.info("Received {}", evt);
         this.hospCode = evt.getHospCode();
     }
 
     @EventSourcingHandler
-    public void on(WardAddedEvent evt) {
+    private void on(WardAddedEvent evt) {
         log.info("Received {}", evt);
         this.wards.add(evt.getWardCode());
     }

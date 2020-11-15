@@ -1,4 +1,4 @@
-package com.example.ags.command;
+package com.example.ags.aggregate;
 
 import com.example.ags.api.WardCreatedEvent;
 import lombok.NoArgsConstructor;
@@ -11,19 +11,19 @@ import org.axonframework.spring.stereotype.Aggregate;
 @Aggregate
 @Slf4j
 @NoArgsConstructor
-public class Ward {
+public class WardAggregate {
 
     @AggregateIdentifier
     private String id;
 
     private String wardCode;
 
-    public Ward(String hospCode, String wardCode) {
+    public WardAggregate(String hospCode, String wardCode) {
         AggregateLifecycle.apply(new WardCreatedEvent(hospCode, wardCode));
     }
 
     @EventSourcingHandler
-    public void on(WardCreatedEvent evt) {
+    private void on(WardCreatedEvent evt) {
         log.info("Received {}", evt);
         this.id = evt.getHospCode() + ":" + evt.getWardCode();
     }
