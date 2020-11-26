@@ -12,7 +12,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Aggregate
+@Aggregate(snapshotTriggerDefinition = "hospitalSnapshotTrigger")
 @Slf4j
 @NoArgsConstructor
 public class HospitalAggregate {
