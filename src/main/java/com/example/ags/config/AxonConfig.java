@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AxonConfig {
 
-
     @Bean
     public SnapshotTriggerDefinition hospitalSnapshotTrigger(Snapshotter snapshotter) {
         return new EventCountSnapshotTriggerDefinition(snapshotter, 5);
     }
-
 }
