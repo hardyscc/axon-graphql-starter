@@ -1,6 +1,9 @@
 package com.example.ags.query.dashboard;
 
-import com.example.ags.api.*;
+import com.example.ags.api.FindHospitalQuery;
+import com.example.ags.api.HospitalCreatedEvent;
+import com.example.ags.api.HospitalDTO;
+import com.example.ags.api.WardCreatedEvent;
 import com.example.ags.query.HospitalRepository;
 import com.example.ags.query.WardRepository;
 import lombok.AllArgsConstructor;
@@ -24,7 +27,7 @@ public class DashboardProjector {
     @EventHandler
     public void on(HospitalCreatedEvent evt) {
         log.info("DashboardProjector: {}", evt);
-        this.hospitalRepository.save(new Hospital(evt.getHospCode(), new ArrayList()));
+        this.hospitalRepository.save(new Hospital(evt.getHospCode(), new ArrayList<>()));
     }
 
 
@@ -35,16 +38,13 @@ public class DashboardProjector {
         this.wardRepository.save(new Ward(evt.getHospCode() + ":" + evt.getWardCode(), hospital, evt.getWardCode()));
     }
 
-
-    @QueryHandler
-    public List<Hospital> handle(ListHospitalQuery query) {
-        return this.hospitalRepository.findAll();
-    }
-
     @QueryHandler
     public HospitalDTO handle(FindHospitalQuery query) {
         Hospital hospital = this.hospitalRepository.findById(query.getHospCode()).orElse(null);
-        List<String> wards = hospital.getWards().stream().map(ward -> ward.getWardCode()).collect(Collectors.toList());
+        if (hospital == null) {
+            throw new RuntimeException("Hospital not found");
+        }
+        List<String> wards = hospital.getWards().stream().map(Ward::getWardCode).collect(Collectors.toList());
         return new HospitalDTO(hospital.getHospCode(), wards);
     }
 }

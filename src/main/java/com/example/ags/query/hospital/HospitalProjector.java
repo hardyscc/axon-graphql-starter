@@ -1,14 +1,17 @@
 package com.example.ags.query.hospital;
 
 import com.example.ags.api.HospitalCreatedEvent;
+import com.example.ags.api.ListHospitalQuery;
 import com.example.ags.api.WardAddedEvent;
 import com.example.ags.query.HospitalViewRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -28,5 +31,10 @@ public class HospitalProjector {
         log.info("HospitalProjector: {}", evt);
         HospitalView hospitalView = this.repository.findById(evt.getHospCode()).orElseThrow();
         hospitalView.getWards().add(evt.getWardCode());
+    }
+
+    @QueryHandler
+    public List<HospitalView> handle(ListHospitalQuery query) {
+        return this.repository.findAll();
     }
 }

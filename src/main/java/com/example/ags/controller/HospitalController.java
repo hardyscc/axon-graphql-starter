@@ -1,6 +1,7 @@
 package com.example.ags.controller;
 
 import com.example.ags.api.*;
+import com.example.ags.query.hospital.HospitalView;
 import com.example.ags.query.ward.WardView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,9 @@ public class HospitalController {
     @GetMapping("/{hospCode}")
     public CompletableFuture<HospitalDTO> getHospital(@PathVariable("hospCode") String hospCode) {
         log.info("getHospital {}", hospCode);
-        return this.queryGateway.query(new FindHospitalQuery(hospCode), ResponseTypes.instanceOf(HospitalDTO.class));
+        return this.queryGateway.query(new FindHospitalQuery(hospCode), ResponseTypes.instanceOf(HospitalDTO.class)).exceptionally(exception -> {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.toString());
+        });
     }
 
     @GetMapping("/{hospCode}/ward/{wardCode}")
@@ -54,8 +57,8 @@ public class HospitalController {
     }
 
     @GetMapping
-    public CompletableFuture<List<HospitalDTO>> listHospital() {
+    public CompletableFuture<List<HospitalView>> listHospital() {
         log.info("listHospital");
-        return this.queryGateway.query(new ListHospitalQuery(), ResponseTypes.multipleInstancesOf(HospitalDTO.class));
+        return this.queryGateway.query(new ListHospitalQuery(), ResponseTypes.multipleInstancesOf(HospitalView.class));
     }
 }
