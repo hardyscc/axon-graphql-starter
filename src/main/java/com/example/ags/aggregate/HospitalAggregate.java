@@ -31,7 +31,7 @@ public class HospitalAggregate {
     public void on(AddWardCommand cmd) throws Exception {
         log.info("Received {}", cmd);
         if (this.wards.contains(cmd.getWardCode())) {
-            throw new AddWardException();
+            throw new WardAlreadyExistException();
         }
         AggregateLifecycle.createNew(WardAggregate.class, () -> new WardAggregate(cmd.getHospCode(), cmd.getWardCode()));
         AggregateLifecycle.apply(new WardAddedEvent(cmd.getHospCode(), cmd.getWardCode()));

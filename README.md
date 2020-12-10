@@ -16,15 +16,26 @@ docker stop some-mysql; docker rm some-mysql
 
 ## Testing
 
+### Command
+
 ```shell script
 curl -X POST 'http://localhost:8080/hospital' -H 'Content-Type: application/json' \
   -d '{ "hospCode": "VH" }'
-```
 
-```shell script
 curl -X POST 'http://localhost:8080/hospital/VH' -H 'Content-Type: application/json' \
   -d '{ "wardCode": "A1" }'
+
+curl -X POST 'http://localhost:8080/hospital/VH/ward/A1' -H 'Content-Type: application/json' \
+  -d '{ "bedNum": 12 }'
+
+curl -X POST 'http://localhost:8080/patient' -H 'Content-Type: application/json' \
+  -d '{ "hkid": "A1234563", "name": "Mary" }'
+
+curl -X POST 'http://localhost:8080/hospital/VH/ward/A1/checkIn' -H 'Content-Type: application/json' \
+  -d '{ "hkid": "A1234563", "bedNum": 12 }'
 ```
+
+### Query
 
 ```shell script
 curl -X GET 'http://localhost:8080/hospital/VH'
