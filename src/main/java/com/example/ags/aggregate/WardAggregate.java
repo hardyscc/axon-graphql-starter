@@ -32,19 +32,23 @@ public class WardAggregate {
     public void on(AddBedCommand cmd) throws Exception {
         log.info("Received {}", cmd);
         if (this.beds.containsKey(cmd.getBedNum())) {
-            throw new BedAlreadyExistException();
+            throw new BedExistException();
         }
         AggregateLifecycle.apply(new BedAddedEvent(cmd.getWardId(), cmd.getBedNum()));
     }
+
 
     @CommandHandler
     public void on(CheckInPatientCommand cmd) throws Exception {
         log.info("Received {}", cmd);
         Bed bed = this.beds.get(cmd.getBedNum());
+        if (bed == null) {
+            throw new BedNotFoundException();
+        }
         if (bed.getHkid() != null) {
             throw new BedOccupiedException();
         }
-        AggregateLifecycle.apply(new PatientCheckedInEvent(cmd.getWardId(), cmd.getBedNum(), cmd.getHkid()));
+        AggregateLifecycle.apply(new PatientCheckedInEvent(cmd.getWardId(), cmd.getBedNum(), cmd.getHkid(), cmd.getName()));
     }
 
     @EventSourcingHandler
@@ -56,7 +60,7 @@ public class WardAggregate {
     @EventSourcingHandler
     private void on(BedAddedEvent evt) {
         log.info("Received {}", evt);
-        this.beds.put(evt.getBedNum(), new Bed(evt.getBedNum(), null));
+        this.beds.put(evt.getBedNum(), new Bed(evt.getBedNum(), null, null));
     }
 
     @EventSourcingHandler
@@ -64,6 +68,7 @@ public class WardAggregate {
         log.info("Received {}", evt);
         Bed bed = this.beds.get(evt.getBedNum());
         bed.setHkid(evt.getHkid());
+        bed.setName(evt.getName());
     }
 
     @Data
@@ -71,5 +76,6 @@ public class WardAggregate {
     public class Bed {
         private Integer BedNum;
         private String hkid;
+        private String name;
     }
 }

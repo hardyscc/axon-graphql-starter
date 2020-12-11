@@ -1,8 +1,14 @@
 package com.example.ags.api
 
 // Hospital
-class WardAlreadyExistException : Exception()
+class WardExistException : Exception()
 
 // Ward
-class BedAlreadyExistException : Exception()
+class BedExistException : Exception()
 class BedOccupiedException : Exception()
+class BedNotFoundException : Exception()
+
+// Patient
+class PatientCheckedInException : Exception()
+class PatientNotCheckedInException : Exception()
+class PatientNotFoundException : Exception()

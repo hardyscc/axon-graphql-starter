@@ -1,9 +1,6 @@
 package com.example.ags.aggregate;
 
-import com.example.ags.api.CreatePatientCommand;
-import com.example.ags.api.PatientCreatedEvent;
-import com.example.ags.api.UpdateWardInfoCommand;
-import com.example.ags.api.WardInfoUpdatedEvent;
+import com.example.ags.api.*;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -31,8 +28,19 @@ public class PatientAggregate {
     }
 
     @CommandHandler
-    public void on(UpdateWardInfoCommand cmd) {
-        AggregateLifecycle.apply(new WardInfoUpdatedEvent(cmd.getHkid(), cmd.getHospCode(), cmd.getWardCode(), cmd.getBedNum()));
+    public void on(CheckInWardCommand cmd) throws PatientCheckedInException {
+        if (this.hospCode != null || this.wardCode != null || this.bedNum != null) {
+            throw new PatientCheckedInException();
+        }
+        AggregateLifecycle.apply(new WardCheckedInEvent(cmd.getHkid(), this.name, cmd.getHospCode(), cmd.getWardCode(), cmd.getBedNum()));
+    }
+
+    @CommandHandler
+    public void on(CancelCheckInWardCommand cmd) throws PatientNotCheckedInException {
+        if (this.hospCode == null || this.wardCode == null || this.bedNum == null) {
+            throw new PatientNotCheckedInException();
+        }
+        AggregateLifecycle.apply(new CheckInWardCancelledEvent(cmd.getHkid()));
     }
 
     @EventSourcingHandler
@@ -43,10 +51,18 @@ public class PatientAggregate {
     }
 
     @EventSourcingHandler
-    private void on(WardInfoUpdatedEvent evt) {
+    private void on(WardCheckedInEvent evt) {
         log.info("Received {}", evt);
         this.hospCode = evt.getHospCode();
         this.wardCode = evt.getWardCode();
         this.bedNum = evt.getBedNum();
+    }
+
+    @EventSourcingHandler
+    private void on(CheckInWardCancelledEvent evt) {
+        log.info("Received {}", evt);
+        this.hospCode = null;
+        this.wardCode = null;
+        this.bedNum = null;
     }
 }

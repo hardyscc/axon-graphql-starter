@@ -24,6 +24,6 @@ public class WardProjector {
 
     @QueryHandler
     public WardView handle(FindWardQuery query) {
-        return this.repository.findById(query.getHospCode() + ":" + query.getWardCode()).orElse(null);
+        return this.repository.findById(query.getHospCode() + ":" + query.getWardCode()).orElseThrow();
     }
 }

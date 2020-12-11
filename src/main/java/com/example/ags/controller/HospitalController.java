@@ -60,7 +60,7 @@ public class HospitalController {
     public CompletableFuture<Object> checkIn(@PathVariable("hospCode") String hospCode, @PathVariable("wardCode") String wardCode, @RequestBody CheckInPatientDTO dto) {
         log.info("checkIn {} {} {}", hospCode, wardCode, dto);
         return this.commandGateway.send(
-                new CheckInPatientCommand(hospCode + ":" + wardCode, dto.getBedNum(), dto.getHkid()))
+                new CheckInWardCommand(dto.getHkid(), hospCode, wardCode, dto.getBedNum()))
                 .exceptionally(exception -> {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.toString());
                 });
@@ -80,7 +80,10 @@ public class HospitalController {
     public CompletableFuture<WardView> getWard(@PathVariable("hospCode") String hospCode, @PathVariable("wardCode") String wardCode) {
         log.info("getWard {} {}", hospCode, wardCode);
         return this.queryGateway.query(
-                new FindWardQuery(hospCode, wardCode), ResponseTypes.instanceOf(WardView.class));
+                new FindWardQuery(hospCode, wardCode), ResponseTypes.instanceOf(WardView.class))
+                .exceptionally(exception -> {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, exception.toString());
+                });
     }
 
     @GetMapping

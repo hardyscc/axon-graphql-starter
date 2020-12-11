@@ -34,16 +34,13 @@ public class DashboardProjector {
     @EventHandler
     public void on(WardCreatedEvent evt) {
         log.info("DashboardProjector: {}", evt);
-        Hospital hospital = this.hospitalRepository.findById(evt.getHospCode()).orElse(null);
+        Hospital hospital = this.hospitalRepository.findById(evt.getHospCode()).orElseThrow();
         this.wardRepository.save(new Ward(evt.getHospCode() + ":" + evt.getWardCode(), hospital, evt.getWardCode()));
     }
 
     @QueryHandler
     public HospitalDTO handle(FindHospitalQuery query) {
-        Hospital hospital = this.hospitalRepository.findById(query.getHospCode()).orElse(null);
-        if (hospital == null) {
-            throw new RuntimeException("Hospital not found");
-        }
+        Hospital hospital = this.hospitalRepository.findById(query.getHospCode()).orElseThrow();
         List<String> wards = hospital.getWards().stream().map(Ward::getWardCode).collect(Collectors.toList());
         return new HospitalDTO(hospital.getHospCode(), wards);
     }
