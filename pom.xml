@@ -17,7 +17,7 @@
     <properties>
         <java.version>11</java.version>
         <axon.version>4.4.4</axon.version>
-        <lombok.version>1.18.0</lombok.version>
+        <lombok.version>1.18.16</lombok.version>
         <kotlin.version>1.4.10</kotlin.version>
         <!--        <springdoc.version>1.4.3</springdoc.version>-->
     </properties>
