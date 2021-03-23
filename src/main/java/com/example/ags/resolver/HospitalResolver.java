@@ -11,36 +11,35 @@ import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGa
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Controller
 @Slf4j
-//@AllArgsConstructor
-//@Component
+@Component
 public class HospitalResolver {
 
-    private final CommandGateway commandGateway;
-    private final QueryGateway queryGateway;
-    private final ReactorQueryGateway reactiveQueryGateway;
+    @Autowired
+    private CommandGateway commandGateway;
+
+    @Autowired
+    private QueryGateway queryGateway;
+
+    @Autowired
+    private ReactorQueryGateway reactiveQueryGateway;
+
     private Flux<Object> flux;
 
-//    @PostConstruct
-//    public void setup() {
-//        flux = reactiveQueryGateway.subscriptionQuery(new NotificationQuery(), ResponseTypes.instanceOf(Object.class));
-//        flux.subscribe();
-//    }
-
-    public HospitalResolver(CommandGateway commandGateway, QueryGateway queryGateway, ReactorQueryGateway reactiveQueryGateway) {
-        this.commandGateway = commandGateway;
-        this.queryGateway = queryGateway;
-        this.reactiveQueryGateway = reactiveQueryGateway;
-
+    @PostConstruct
+    public void setup() {
         flux = reactiveQueryGateway.subscriptionQuery(new NotificationQuery(), ResponseTypes.instanceOf(Object.class));
         flux.subscribe();
     }
