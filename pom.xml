@@ -20,6 +20,8 @@
         <lombok.version>1.18.16</lombok.version>
         <kotlin.version>1.4.10</kotlin.version>
         <!--        <springdoc.version>1.4.3</springdoc.version>-->
+        <graphql-java-kickstart.version>7.1.0</graphql-java-kickstart.version>
+        <graphql-spqr.version>0.10.1</graphql-spqr.version>
     </properties>
 
     <dependencies>
@@ -70,6 +72,12 @@
         <!--            <artifactId>h2</artifactId>-->
         <!--            <scope>runtime</scope>-->
         <!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -97,6 +105,45 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.axonframework.extensions.reactor</groupId>
+            <artifactId>axon-reactor-spring-boot-starter</artifactId>
+            <version>4.4.2</version>
+        </dependency>
+        <!-- Graphql API Library -->
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphql-spring-boot-starter</artifactId>
+            <version>${graphql-java-kickstart.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.graphql-java</groupId>
+                    <artifactId>graphql-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>playground-spring-boot-starter</artifactId>
+            <version>${graphql-java-kickstart.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.leangen.graphql</groupId>
+            <artifactId>graphql-spqr-spring-boot-starter</artifactId>
+            <version>0.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>io.leangen.graphql</groupId>
+            <artifactId>spqr</artifactId>
+            <version>${graphql-spqr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -147,23 +194,25 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <executions>
+                    <!-- Replacing default-compile as it is treated specially by maven -->
                     <execution>
                         <id>default-compile</id>
                         <phase>none</phase>
                     </execution>
+                    <!-- Replacing default-testCompile as it is treated specially by maven -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>compile</id>
+                        <id>java-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>testCompile</id>
+                        <id>java-test-compile</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>testCompile</goal>

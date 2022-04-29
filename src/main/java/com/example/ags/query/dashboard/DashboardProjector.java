@@ -1,15 +1,13 @@
 package com.example.ags.query.dashboard;
 
-import com.example.ags.api.FindHospitalQuery;
-import com.example.ags.api.HospitalCreatedEvent;
-import com.example.ags.api.HospitalDTO;
-import com.example.ags.api.WardCreatedEvent;
+import com.example.ags.api.*;
 import com.example.ags.query.HospitalRepository;
 import com.example.ags.query.WardRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -43,5 +41,10 @@ public class DashboardProjector {
         Hospital hospital = this.hospitalRepository.findById(query.getHospCode()).orElseThrow();
         List<String> wards = hospital.getWards().stream().map(Ward::getWardCode).collect(Collectors.toList());
         return new HospitalDTO(hospital.getHospCode(), wards);
+    }
+
+    @QueryHandler
+    public Object handle(NotificationQuery query) {
+        return query;
     }
 }
